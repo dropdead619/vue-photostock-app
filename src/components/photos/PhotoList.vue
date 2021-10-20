@@ -1,16 +1,17 @@
 <template>
-  <section class="photo-list">
+  <section class="gallery">
     <h2>Free stock photos</h2>
-    <ul class="wide-container">
+    <div class="gallery__list wide-container">
       <PhotoItem
         v-for="photo in stockPhotos"
         :key="photo.id"
+        :id="photo.id"
         :url="photo.urls.regular"
         :alt="photo.alt_description"
         :userName="photo.user.name"
         :userProfileImageUrl="photo.user.profile_image.small"
       ></PhotoItem>
-    </ul>
+    </div>
   </section>
 </template>
  
@@ -24,44 +25,43 @@ export default {
   computed: {
     ...mapState(["stockPhotos"]),
   },
-  methods: {
-
-  },
+  methods: {},
 };
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  padding: 40px;
-  text-align: start;
-}
+.gallery {
+  h2 {
+    padding: 40px;
+    text-align: start;
+  }
 
-ul {
-  position: relative;
-  column-count: 4;
-  column-gap: 4px;
-}
+  &__list {
+    position: relative;
+    column-count: 4;
+    column-gap: 7px;
+  }
 
-@media (max-width: 1400px) {
-  ul {
+  @media (max-width: 1400px) {
+    &__list {
       column-count: 4;
+    }
   }
-}
-@media (max-width: 1200px) {
-  ul {
+  @media (max-width: 1200px) {
+    &__list {
       column-count: 3;
+    }
   }
-}
 
-@media (max-width: 768px) {
-  ul {
+  @media (max-width: 768px) {
+    &__list {
       column-count: 2;
+    }
   }
-}
-@media (max-width: 430px) {
-  ul {
+  @media (max-width: 430px) {
+    &__list {
       column-count: 1;
+    }
   }
 }
-
 </style>

@@ -26,7 +26,7 @@ export default {};
   align-items: center;
   position: sticky;
   top:0;
-  z-index: 999;
+  z-index: 888;
 }
 .wide-container {
     max-width: 1700px;
