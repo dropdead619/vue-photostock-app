@@ -8,7 +8,7 @@
     </div>
     <img :src="url" :alt="alt" />
   </li>
-  <div class="photo__modal">
+  <div class="photo__modal" v-if="false">
     <dialog open></dialog>
   </div>
 </template>
@@ -35,17 +35,16 @@ export default {
 <style lang="scss" scoped>
 .photo {
   position: relative;
-  display: flex;
-  margin: 5px;
-  flex-direction: column;
-  width: 25%;
-  flex-grow: 1;
+  display: inline-block;
+  font-size: 0;
+  overflow: hidden;
   &__layer {
     position: absolute;
     display: flex;
     width: 100%;
     height: 70px;
     bottom: 0;
+      font-size: 14px;
     color: white;
     padding: 5px 10px;
     display: none;
@@ -69,10 +68,7 @@ export default {
     }
   }
   > img {
-    object-fit: cover;
-    max-height: 100%;
-    min-width: 100%;
-    vertical-align: bottom;
+    width: 100%;
   }
 }
 </style>

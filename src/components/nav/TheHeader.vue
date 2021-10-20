@@ -29,6 +29,7 @@ export default {};
   z-index: 999;
 }
 .wide-container {
+    max-width: 1700px;
   display: flex;
   align-items: center;
 }

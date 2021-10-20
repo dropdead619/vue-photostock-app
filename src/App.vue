@@ -24,29 +24,30 @@ export default {
   methods: {
     ...mapActions(["fetchStockPhotos"]),
     scroll() {
-        let scrollPointPosition =
-          Math.max(
-            window.pageYOffset,
-            document.documentElement.scrollTop,
-            document.body.scrollTop
-          ) +
-            window.innerHeight  ===
-          document.documentElement.offsetHeight;
+      let scrollPointPosition =
+        Math.max(
+          window.pageYOffset,
+          document.documentElement.scrollTop,
+          document.body.scrollTop
+        ) +
+          window.innerHeight >=
+        document.documentElement.offsetHeight;
 
-        if (scrollPointPosition) {
-          this.fetchStockPhotos({
-            accessKey: this.accessKey,
-            url: this.url,
-            perPage: this.perPage,
-            page: this.page,
-            mutation: "addMorePhotos",
-          });
-          this.page++;
-        }
+      if (scrollPointPosition) {
+        console.log("bottom");
+        this.fetchStockPhotos({
+          accessKey: this.accessKey,
+          url: this.url,
+          perPage: this.perPage,
+          page: this.page,
+          mutation: "addMorePhotos",
+        });
+        this.page++;
+      }
     },
   },
   mounted() {
-    window.addEventListener('scroll', this.scroll);
+    window.addEventListener("scroll", this.scroll);
     this.fetchStockPhotos({
       accessKey: this.accessKey,
       url: this.url,
@@ -54,10 +55,11 @@ export default {
       page: this.page,
       mutation: "fetchStockPhotos",
     });
+    this.page++;
   },
   unmounted() {
-        window.removeEventListener('scroll', this.scroll);
-  }
+    window.removeEventListener("scroll", this.scroll);
+  },
 };
 </script>
 
@@ -99,34 +101,33 @@ ul {
   margin: 0 auto;
 }
 
-@media (max-width: 1400px) {
-  .wide-container {
-  max-width: 1300px;
-}
+// @media (max-width: 1400px) {
+//   .wide-container {
+//     max-width: 1300px;
+//   }
 
-.medium-container {
-  max-width: 992px;
-}
+//   .medium-container {
+//     max-width: 992px;
+//   }
+// }
 
-@media (max-width: 1200px) {
-  .wide-container {
-  max-width: 1100px;
-}
+// @media (max-width: 1200px) {
+//   .wide-container {
+//     max-width: 1100px;
+//   }
 
-.medium-container {
-  max-width: 768px;
-}
-}
+//   .medium-container {
+//     max-width: 768px;
+//   }
+// }
 
-@media (max-width: 992px) {
-  .wide-container {
-  max-width: 892px;
-}
+// @media (max-width: 992px) {
+//   .wide-container {
+//     max-width: 892px;
+//   }
 
-.medium-container {
-  max-width: 576px;
-}
-}
-
-}
+//   .medium-container {
+//     max-width: 576px;
+//   }
+// }
 </style>

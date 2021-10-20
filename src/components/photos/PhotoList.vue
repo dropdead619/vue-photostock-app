@@ -37,9 +37,31 @@ h2 {
 }
 
 ul {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  overflow: hidden; 
+  position: relative;
+  column-count: 4;
+  column-gap: 4px;
 }
+
+@media (max-width: 1400px) {
+  ul {
+      column-count: 4;
+  }
+}
+@media (max-width: 1200px) {
+  ul {
+      column-count: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  ul {
+      column-count: 2;
+  }
+}
+@media (max-width: 430px) {
+  ul {
+      column-count: 1;
+  }
+}
+
 </style>
