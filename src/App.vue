@@ -1,13 +1,12 @@
 <template>
-  <div class="wrapper">
-    <TheHeader />
-    <PhotoList />
-  </div>
+  <TheHeader />
+  <PhotoList />
 </template>
 
 <script>
 import TheHeader from "@/components/nav/TheHeader.vue";
 import PhotoList from "@/components/photos/PhotoList.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: {
@@ -18,21 +17,47 @@ export default {
     return {
       accessKey: "uEfwAzM_fdOUiUFKPIPCiYrgjuxaUcrXW3gOHuJ7uIc",
       url: "https://api.unsplash.com",
+      page: 1,
+      perPage: 30,
     };
   },
   methods: {
-    getPhotoList() {
-      this.$store.dispatch({
-        type: "getStockPhotos",
-        accessKey: this.accessKey,
-        url: this.url,
-      });
+    ...mapActions(["fetchStockPhotos"]),
+    scroll() {
+        let scrollPointPosition =
+          Math.max(
+            window.pageYOffset,
+            document.documentElement.scrollTop,
+            document.body.scrollTop
+          ) +
+            window.innerHeight  ===
+          document.documentElement.offsetHeight;
+
+        if (scrollPointPosition) {
+          this.fetchStockPhotos({
+            accessKey: this.accessKey,
+            url: this.url,
+            perPage: this.perPage,
+            page: this.page,
+            mutation: "addMorePhotos",
+          });
+          this.page++;
+        }
     },
   },
   mounted() {
-    this.getPhotoList();
-    console.log(this.$store.getters.fetchedStockPhotos)
+    window.addEventListener('scroll', this.scroll);
+    this.fetchStockPhotos({
+      accessKey: this.accessKey,
+      url: this.url,
+      perPage: this.perPage,
+      page: this.page,
+      mutation: "fetchStockPhotos",
+    });
   },
+  unmounted() {
+        window.removeEventListener('scroll', this.scroll);
+  }
 };
 </script>
 
@@ -49,10 +74,21 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  position: relative;
+}
+
+body {
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+ul {
+  list-style: none;
 }
 
 .wide-container {
-  max-width: 1600px;
+  max-width: 1500px;
   width: 100%;
   margin: 0 auto;
 }
@@ -61,5 +97,36 @@ export default {
   max-width: 1170px;
   width: 100%;
   margin: 0 auto;
+}
+
+@media (max-width: 1400px) {
+  .wide-container {
+  max-width: 1300px;
+}
+
+.medium-container {
+  max-width: 992px;
+}
+
+@media (max-width: 1200px) {
+  .wide-container {
+  max-width: 1100px;
+}
+
+.medium-container {
+  max-width: 768px;
+}
+}
+
+@media (max-width: 992px) {
+  .wide-container {
+  max-width: 892px;
+}
+
+.medium-container {
+  max-width: 576px;
+}
+}
+
 }
 </style>

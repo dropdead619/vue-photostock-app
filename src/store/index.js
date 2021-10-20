@@ -14,17 +14,33 @@ export default createStore({
     }
   },
   mutations: {
-    getStockPhotos(state, accessKey, url) {
-      fetch(url + '/photos/' + "?client_id=" + accessKey)
-        .then((response) => {
-          state.stockPhotos = response;
-        });
+    fetchStockPhotos(state, data) {
+      state.stockPhotos = data;
+    },
+    addMorePhotos(state, data) {
+      for(const photo of data) {
+        state.stockPhotos.push(photo);
+      }
     }
   },
   actions: {
-    getStockPhotos(context, accessKey, url) {
-      context.commit('getStockPhotos', accessKey, url);
-    }
+    fetchStockPhotos(context, args) {
+      fetch(`${args.url}/photos/?client_id=${args.accessKey}&page=${args.page}&per_page=${args.perPage}`)
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            throw 'Status exception!';
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .then(data => {
+          console.log(data);
+          context.commit(args.mutation, data);
+        });
+    },
   },
   modules: {}
 })

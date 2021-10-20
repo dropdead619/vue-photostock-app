@@ -1,12 +1,15 @@
 <template>
-  <div class="photo">
-    <!-- <div class="photo-layer">
-      <div class="author">
-        <img :src="props.authorAvatarUrl" :alt="props.authorName" />
-        <div class="author-name">{{ props.authorName }}</div>
+  <li class="photo">
+    <div class="photo__layer">
+      <div class="photo__author">
+        <img :src="userProfileImageUrl" :alt="userName" />
+        <div class="author__name">{{ userName }}</div>
       </div>
     </div>
-    <img :src="props.url" alt="" /> -->
+    <img :src="url" :alt="alt" />
+  </li>
+  <div class="photo__modal">
+    <dialog open></dialog>
   </div>
 </template>
 
@@ -16,10 +19,13 @@ export default {
     url: {
       type: String,
     },
-    authorName: {
+    alt: {
       type: String,
     },
-    authorAvatarUrl: {
+    userName: {
+      type: String,
+    },
+    userProfileImageUrl: {
       type: String,
     },
   },
@@ -29,12 +35,44 @@ export default {
 <style lang="scss" scoped>
 .photo {
   position: relative;
-  .photo-layer {
+  display: flex;
+  margin: 5px;
+  flex-direction: column;
+  width: 25%;
+  flex-grow: 1;
+  &__layer {
     position: absolute;
     display: flex;
     width: 100%;
-    height: 40px;
+    height: 70px;
     bottom: 0;
+    color: white;
+    padding: 5px 10px;
+    display: none;
+    background: linear-gradient(to bottom, transparent 0%, black 100%);
+    .photo__author {
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      img {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+      }
+    }
+  }
+  &:hover {
+    .photo__layer {
+      display: flex;
+    }
+  }
+  > img {
+    object-fit: cover;
+    max-height: 100%;
+    min-width: 100%;
+    vertical-align: bottom;
   }
 }
 </style>
