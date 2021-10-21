@@ -11,6 +11,9 @@
   <teleport to="body">
     <div class="modal" v-if="isModalOpened" @click="toggleModal">
       <dialog open class="modal__dialog">
+        <div class="modal__layer">
+          <Button @click="downloadImage">Download</Button>
+        </div>
         <img
           class="modal__fullsizePhoto"
           :src="currentPhoto.urls.full"
@@ -22,7 +25,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   props: {
     id: {
@@ -48,15 +51,22 @@ export default {
     };
   },
   computed: {
-    ...mapState(["stockPhotos"]),
+    ...mapState(["stockPhotos", "stockPhotosArr"]),
     currentPhoto() {
-      return this.stockPhotos.find((el) => el.id === this.activeImageId);
+      const targetPhoto = this.stockPhotosArr.find(
+        (el) => el.id === this.activeImageId
+      );
+      return targetPhoto;
     },
   },
   methods: {
+    ...mapMutations(["toggleLoadingState"]),
+    downloadImage() {
+      window.open(this.currentPhoto.urls.raw);
+    },
     toggleModal(event) {
+      this.toggleLoadingState();
       this.activeImageId = event.target.id;
-
       this.isModalOpened = !this.isModalOpened;
     },
   },
@@ -66,10 +76,9 @@ export default {
 <style lang="scss" scoped>
 .photo {
   position: relative;
-  display: inline-block;
+  margin-bottom: 10px;
   font-size: 0;
   overflow: hidden;
-  margin-bottom: 3px;
   cursor: pointer;
   &__layer {
     position: absolute;
@@ -120,17 +129,32 @@ export default {
   display: flex;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.7);
+
   &__dialog {
     position: inherit;
     margin: 0 auto;
-    max-width: 60vw;
-    max-height: 80vh;
+    max-height: 90vh;
     min-width: 200px;
+    background: transparent;
     border: none;
+    &:hover button {
+      display: block;
+    }
+
     img {
-      display: inline-block;
-      max-height: 80vh;
+      max-height: 90vh;
+      width: 100%;
       height: 100%;
+      object-fit: scale-down;
+    }
+  }
+  &__layer {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    button {
+      display: none;
+      z-index: 9999;
     }
   }
 }

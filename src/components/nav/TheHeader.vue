@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <header class="wrapper">
     <div class="wide-container">
       <div class="logo-container">
           <a href="#">
@@ -10,7 +10,7 @@
         <input type="search" placeholder="Search free images..." />
       </div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script>

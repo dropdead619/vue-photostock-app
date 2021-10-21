@@ -5,7 +5,15 @@ import {
 export default createStore({
   state() {
     return {
-      stockPhotos: []
+      stockPhotos: [
+        [],
+        [],
+        [],
+        [],
+      ],
+      stockPhotosArr: [],
+      searchInput: '',
+      isLoading: false
     };
   },
   getters: {
@@ -15,18 +23,36 @@ export default createStore({
   },
   mutations: {
     fetchStockPhotos(state, data) {
-      state.stockPhotos = data;
-    },
-    addMorePhotos(state, data) {
-      for(const photo of data) {
-        state.stockPhotos.push(photo);
+      for (let i = 0; i < data.length; i++) {
+        if (i % 4 === 0) {
+          state.stockPhotos[0].push(data[i]);
+        } else if (i % 4 === 1) {
+          state.stockPhotos[1].push(data[i]);
+        } else if (i % 4 === 2) {
+          state.stockPhotos[2].push(data[i]);
+        } else if (i % 4 === 3) {
+          state.stockPhotos[3].push(data[i]);
+        }
       }
-    }
+    },
+    fetchStockPhotosArray(state, data) {
+      state.stockPhotosArr = data;
+      console.log(state.stockPhotosArr);
+    },
+    addStockPhotosArrayElems(state, data) {
+      for(const photo of data) {
+        state.stockPhotosArr.push(photo);
+      }
+    },
+    toggleLoadingState(state) {
+      state.isLoading = !state.isLoading;
+    },
   },
   actions: {
     fetchStockPhotos(context, args) {
-      fetch(`${args.url}/photos/?client_id=${args.accessKey}&page=${args.page}&per_page=${args.perPage}`)
+      fetch(`${args.url}/${args.path}?client_id=${args.accessKey}&page=${args.page}&per_page=${args.perPage}`)
         .then(response => {
+          context.commit('toggleLoadingState');
           if (response.ok) {
             return response.json()
           } else {
@@ -38,9 +64,10 @@ export default createStore({
         })
         .then(data => {
           console.log(data);
-          context.commit(args.mutation, data);
+          context.commit('fetchStockPhotos', data);
+          context.commit(args.arrayMutation, data);
+          context.commit('toggleLoadingState');
         });
     },
   },
-  modules: {}
 })

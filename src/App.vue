@@ -1,12 +1,13 @@
 <template>
   <TheHeader />
   <PhotoList />
+  <teleport to="body"><Preloader v-if="isLoading" /></teleport>
 </template>
 
 <script>
 import TheHeader from "@/components/nav/TheHeader.vue";
 import PhotoList from "@/components/photos/PhotoList.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   components: {
@@ -18,8 +19,11 @@ export default {
       accessKey: "uEfwAzM_fdOUiUFKPIPCiYrgjuxaUcrXW3gOHuJ7uIc",
       url: "https://api.unsplash.com",
       page: 1,
-      perPage: 30,
+      perPage: 28,
     };
+  },
+  computed: {
+    ...mapState(["isLoading"]),
   },
   methods: {
     ...mapActions(["fetchStockPhotos"]),
@@ -38,9 +42,10 @@ export default {
         this.fetchStockPhotos({
           accessKey: this.accessKey,
           url: this.url,
+          path: "/photos",
           perPage: this.perPage,
           page: this.page,
-          mutation: "addMorePhotos",
+          arrayMutation: "addStockPhotosArrayElems",
         });
         this.page++;
       }
@@ -51,9 +56,10 @@ export default {
     this.fetchStockPhotos({
       accessKey: this.accessKey,
       url: this.url,
+      path: "/photos",
       perPage: this.perPage,
       page: this.page,
-      mutation: "fetchStockPhotos",
+      arrayMutation: "fetchStockPhotosArray",
     });
     this.page++;
   },

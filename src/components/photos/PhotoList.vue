@@ -1,20 +1,25 @@
 <template>
   <section class="gallery">
     <h2>Free stock photos</h2>
-    <div class="gallery__list wide-container">
-      <PhotoItem
-        v-for="photo in stockPhotos"
-        :key="photo.id"
-        :id="photo.id"
-        :url="photo.urls.regular"
-        :alt="photo.alt_description"
-        :userName="photo.user.name"
-        :userProfileImageUrl="photo.user.profile_image.small"
-      ></PhotoItem>
+    <div class="gallery__grid wide-container">
+      <div
+        class="gallery__column--1"
+        v-for="col in stockPhotos"
+        :key="stockPhotos.indexOf(col)"
+      >
+        <PhotoItem
+          v-for="photo in col"
+          :key="photo.id"
+          :id="photo.id"
+          :url="photo.urls.regular"
+          :alt="photo.alt_description"
+          :userName="photo.user.name"
+          :userProfileImageUrl="photo.user.profile_image.small"
+        ></PhotoItem>
+      </div>
     </div>
   </section>
 </template>
- 
 <script>
 import PhotoItem from "./PhotoItem.vue";
 import { mapState } from "vuex";
@@ -23,7 +28,7 @@ export default {
     PhotoItem,
   },
   computed: {
-    ...mapState(["stockPhotos"]),
+    ...mapState(["stockPhotos", "isLoading"]),
   },
   methods: {},
 };
@@ -36,31 +41,33 @@ export default {
     text-align: start;
   }
 
-  &__list {
+  &__grid {
     position: relative;
-    column-count: 4;
-    column-gap: 7px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 10px;
   }
 
   @media (max-width: 1400px) {
-    &__list {
-      column-count: 4;
+    &__grid {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
     }
   }
   @media (max-width: 1200px) {
-    &__list {
-      column-count: 3;
+    &__grid {
+      grid-template-columns: 1fr 1fr 1fr;
     }
   }
 
   @media (max-width: 768px) {
-    &__list {
-      column-count: 2;
+    &__grid {
+      grid-template-columns: 1fr 1fr;
     }
   }
   @media (max-width: 430px) {
-    &__list {
-      column-count: 1;
+    &__grid {
+      grid-template-columns: 1fr;
     }
   }
 }
