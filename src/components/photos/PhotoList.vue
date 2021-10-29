@@ -10,11 +10,12 @@
         <PhotoItem
           v-for="photo in col"
           :key="photo.id"
-          :id="photo.id"
           :url="photo.urls.regular"
           :alt="photo.alt_description"
           :userName="photo.user.name"
           :userProfileImageUrl="photo.user.profile_image.small"
+          :urlFull="photo.urls.full"
+          :altFull="photo.alt_description"
         ></PhotoItem>
       </div>
     </div>

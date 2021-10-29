@@ -14,19 +14,15 @@ export default {
     TheHeader,
     PhotoList,
   },
-  data() {
-    return {
-      accessKey: "uEfwAzM_fdOUiUFKPIPCiYrgjuxaUcrXW3gOHuJ7uIc",
-      url: "https://api.unsplash.com",
-      page: 1,
-      perPage: 28,
-    };
-  },
   computed: {
-    ...mapState(["isLoading"]),
+    ...mapState(["isLoading", "searchInput"]),
   },
   methods: {
-    ...mapActions(["fetchStockPhotos"]),
+    ...mapActions([
+      "fetchStockPhotos",
+      "incrementPage",
+      "fetchPhotosBySearchValue",
+    ]),
     scroll() {
       let scrollPointPosition =
         Math.max(
@@ -37,31 +33,20 @@ export default {
           window.innerHeight >=
         document.documentElement.offsetHeight;
 
-      if (scrollPointPosition) {
+      if (scrollPointPosition && this.searchInput === "") {
         console.log("bottom");
-        this.fetchStockPhotos({
-          accessKey: this.accessKey,
-          url: this.url,
-          path: "/photos",
-          perPage: this.perPage,
-          page: this.page,
-          arrayMutation: "addStockPhotosArrayElems",
-        });
-        this.page++;
+        this.fetchStockPhotos();
+        this.incrementPage();
+      } else if (scrollPointPosition) {
+        this.fetchPhotosBySearchValue();
+        this.incrementPage();
       }
     },
   },
   mounted() {
     window.addEventListener("scroll", this.scroll);
-    this.fetchStockPhotos({
-      accessKey: this.accessKey,
-      url: this.url,
-      path: "/photos",
-      perPage: this.perPage,
-      page: this.page,
-      arrayMutation: "fetchStockPhotosArray",
-    });
-    this.page++;
+    this.fetchStockPhotos();
+    this.incrementPage();
   },
   unmounted() {
     window.removeEventListener("scroll", this.scroll);

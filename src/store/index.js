@@ -1,6 +1,7 @@
 import {
   createStore
 } from 'vuex'
+import axios from 'axios';
 
 export default createStore({
   state() {
@@ -11,9 +12,12 @@ export default createStore({
         [],
         [],
       ],
-      stockPhotosArr: [],
       searchInput: '',
-      isLoading: false
+      isLoading: false,
+      accessKey: "uMIpaI-f_-INqfzuz_3gXZM926Yj8dlxP0zd81w8Wq0",
+      url: "https://api.unsplash.com",
+      page: 1,
+      perPage: 28,
     };
   },
   getters: {
@@ -22,6 +26,9 @@ export default createStore({
     }
   },
   mutations: {
+    incrementPage(state) {
+      state.page++;
+    },
     fetchStockPhotos(state, data) {
       for (let i = 0; i < data.length; i++) {
         if (i % 4 === 0) {
@@ -35,26 +42,40 @@ export default createStore({
         }
       }
     },
-    fetchStockPhotosArray(state, data) {
-      state.stockPhotosArr = data;
-      console.log(state.stockPhotosArr);
-    },
-    addStockPhotosArrayElems(state, data) {
-      for(const photo of data) {
-        state.stockPhotosArr.push(photo);
-      }
-    },
     toggleLoadingState(state) {
       state.isLoading = !state.isLoading;
     },
+    updateSearchInput(state, searchValue) {
+      state.searchInput = searchValue;
+    },
+    resetStockPhotos(state) {
+      state.stockPhotos = [
+        [],
+        [],
+        [],
+        [],
+      ];
+    }
   },
   actions: {
-    fetchStockPhotos(context, args) {
-      fetch(`${args.url}/${args.path}?client_id=${args.accessKey}&page=${args.page}&per_page=${args.perPage}`)
+    incrementPage(context) {
+      context.commit("incrementPage");
+    },
+    updateSearchInput(context, args) {
+      context.commit("updateSearchInput", args.searchValue);
+    },
+    fetchStockPhotos(context) {
+      axios.get(`${context.state.url}/photos`, {
+          params: {
+            client_id: context.state.accessKey,
+            page: context.state.page,
+            per_page: context.state.perPage,
+          }
+        })
         .then(response => {
           context.commit('toggleLoadingState');
-          if (response.ok) {
-            return response.json()
+          if (response.status === 200) {
+            return response.data;
           } else {
             throw 'Status exception!';
           }
@@ -65,9 +86,37 @@ export default createStore({
         .then(data => {
           console.log(data);
           context.commit('fetchStockPhotos', data);
-          context.commit(args.arrayMutation, data);
           context.commit('toggleLoadingState');
         });
     },
+    fetchPhotosBySearchValue(context) {
+      axios.get(`${context.state.url}/search/photos`, {
+          params: {
+            client_id: context.state.accessKey,
+            page: context.state.page,
+            per_page: context.state.perPage,
+            query: context.state.searchInput.trim()
+          }
+        })
+        .then(response => {
+          context.commit('toggleLoadingState');
+          if (response.status === 200) {
+            return response.data;
+          } else {
+            throw 'Status exception!';
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .then(data => {
+          console.log(data.results);
+          context.commit('fetchStockPhotos', data.results);
+          context.commit('toggleLoadingState');
+        });
+    },
+    resetStockPhotos(context) {
+      context.commit('resetStockPhotos');
+    }
   },
 })

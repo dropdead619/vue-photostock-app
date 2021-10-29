@@ -6,7 +6,7 @@
         <div class="author__name">{{ userName }}</div>
       </div>
     </div>
-    <img :src="url" :alt="alt" @click="toggleModal" :id="id" />
+    <img :src="url" :alt="alt" @click="toggleModal"/>
   </div>
   <teleport to="body">
     <div class="modal" v-if="isModalOpened" @click="toggleModal">
@@ -16,8 +16,8 @@
         </div>
         <img
           class="modal__fullsizePhoto"
-          :src="currentPhoto.urls.full"
-          :alt="currentPhoto.alt_description"
+          :src="urlFull"
+          :alt="altFull"
         />
       </dialog>
     </div>
@@ -28,9 +28,6 @@
 import { mapState, mapMutations } from "vuex";
 export default {
   props: {
-    id: {
-      type: String,
-    },
     url: {
       type: String,
     },
@@ -43,6 +40,12 @@ export default {
     userProfileImageUrl: {
       type: String,
     },
+    urlFull: {
+      type: String
+    },
+        altFull: {
+      type: String
+    }
   },
   data() {
     return {
@@ -52,21 +55,14 @@ export default {
   },
   computed: {
     ...mapState(["stockPhotos", "stockPhotosArr"]),
-    currentPhoto() {
-      const targetPhoto = this.stockPhotosArr.find(
-        (el) => el.id === this.activeImageId
-      );
-      return targetPhoto;
-    },
   },
   methods: {
     ...mapMutations(["toggleLoadingState"]),
     downloadImage() {
-      window.open(this.currentPhoto.urls.raw);
+      window.open(this.urlFull);
     },
-    toggleModal(event) {
+    toggleModal() {
       this.toggleLoadingState();
-      this.activeImageId = event.target.id;
       this.isModalOpened = !this.isModalOpened;
     },
   },
